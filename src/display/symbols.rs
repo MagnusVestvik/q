@@ -1,13 +1,13 @@
-pub mod Symbols {
-    pub const HORIZONTAL: String = "─";
-    pub const VERTICAL: String = "│";
-    pub const TOP_LEFT: String = "┌";
-    pub const BOTTOM_LEFT: String = "└";
-    pub const TOP_RIGHT: String = "┐";
-    pub const BOTTOM_RIGHT: String = "┘";
-    pub const T_DOWN: String = "┬";
-    pub const T_UP: String = "┴";
-    pub const T_LEFT: String = "├";
-    pub const T_RIGHT: String = "┤";
-    pub const CROSS: String = "┼";
+pub mod symbols {
+    pub const HORIZONTAL: &str = "─";
+    pub const VERTICAL: &str = "│";
+    pub const TOP_LEFT: &str = "┌";
+    pub const BOTTOM_LEFT: &str = "└";
+    pub const TOP_RIGHT: &str = "┐";
+    pub const BOTTOM_RIGHT: &str = "┘";
+    pub const T_DOWN: &str = "┬";
+    pub const T_UP: &str = "┴";
+    pub const T_LEFT: &str = "├";
+    pub const T_RIGHT: &str = "┤";
+    pub const CROSS: &str = "┼";
 }

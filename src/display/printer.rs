@@ -1,5 +1,5 @@
 use super::color::Color;
-use super::symbols::{self, Symbols};
+use super::symbols;
 use string_builder::Builder;
 
 pub struct Printer {
@@ -12,7 +12,8 @@ pub struct Printer {
 // We should have name, type, size and modified. maybe skip the option of having size and make it
 // default
 
-impl Printer { // TODO: missing logic for actually drawing header text
+impl Printer {
+    // TODO: missing logic for actually drawing header text
     fn new(
         folder_color: Color,
         files_color: Color,
@@ -40,32 +41,45 @@ impl Printer { // TODO: missing logic for actually drawing header text
     }
 
     fn draw_input_show_size() -> String {
-        Symbols::HORIZONTAL.to_string()
+        symbols::symbols::HORIZONTAL.to_string()
     }
 
     fn draw_header(&self, width: usize, height: usize) -> String {
-        let mut sb = Builder::default(); // TODO: missing logic for actually drawing header text
-        sb.append("-".repeat(width));
-        sb.append("|\n".repeat(height))
+        let mut sb = Builder::default();
+        sb.append(format!(
+            "{}{}{}\n",
+            symbols::symbols::TOP_LEFT,
+            symbols::symbols::HORIZONTAL.repeat(width - 2),
+            symbols::symbols::TOP_RIGHT,
+        ));
+        sb.append(format!(
+            // TODO: should create boxes for each column here
+            "{}{}{}{}{}{}{}",
+            symbols::symbols::VERTICAL,
+            "#",
+            "Name",
+            "Type",
+            "Size",
+            "modified",
+            symbols::symbols::VERTICAL,
+        ));
 
         sb.string().unwrap()
     }
 
-    fn draw_body(&self, input: Vec<String>) -> String{
+    fn draw_body(&self, input: Vec<String>) -> String {
         "".to_string()
     }
-    fn draw_body_with_size(&self, input: Vec<String>, size: Vec<String>) -> String{
-        "".to_string()
-    }
-
-    fn draw_footer(&self) -> String{
+    fn draw_body_with_size(&self, input: Vec<String>, size: Vec<String>) -> String {
         "".to_string()
     }
 
-    fn draw_box() -> String{
+    fn draw_footer(&self) -> String {
+        "".to_string()
+    }
+
+    fn draw_box() -> String {
         let mut sb = Builder::default();
-        sb.append(Symbols::HORIZONTAL.to_string().repeat(4));
-        sb.append(Symbols::VERTICAL.to_string().repeat(4) + &" ".to_string().repeat(4) + &Symbols::HORIZONTAL.to_string().repeat(4));
         "".to_string()
     }
 }
