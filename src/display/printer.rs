@@ -48,27 +48,40 @@ impl Printer {
         sym::HORIZONTAL.to_string()
     }
 
-    fn draw_header(&self, width: usize, height: usize) -> String {
-        let mut sb = Builder::default();
-        sb.append(format!(
+    fn draw_header(&self, width: usize) -> String {
+        let mut header: String = String::new();
+
+        write!(
+            &mut header,
             "{}{}{}\n",
             sym::TOP_LEFT,
             sym::HORIZONTAL.repeat(width - 2),
             sym::TOP_RIGHT,
-        ));
-        sb.append(format!(
-            // TODO: should create boxes for each column here this draw method is also wrong
-            "{}{}{}{}{}{}{}",
+        )
+        .unwrap();
+
+        write!(
+            &mut header,
+            "{}{}{}{}{}{}{}\n",
             sym::VERTICAL,
-            "#",
+            "#", // TODO: this will be ugly looking should make somthing for boxing theese in
             "Name",
             "Type",
             "Size",
             "modified",
             sym::VERTICAL,
-        ));
+        )
+        .unwrap();
 
-        sb.string().unwrap()
+        header
+    }
+
+    //  TODO: Implement
+    fn draw_box(item: String, x_padding: usize, y_padding: usize, has_top: bool) -> String {
+        let WIDTH: usize = x_padding * 2 + item.len();
+        let mut box: String = String::new(); 
+
+        "".to_string()
     }
 
     fn draw_bottom(width: usize) -> String {
