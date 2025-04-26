@@ -1,7 +1,7 @@
-use crate::display::printer::Printer;
-use crate::logic::files_logic::get_files_as_list;
+use crate::domain::display::printer::Printer;
+use crate::logic::path_handler::get_files_as_list;
 use std::env;
-mod display;
+mod domain;
 mod logic;
 fn main() {
     let args: Vec<String> = env::args().collect();

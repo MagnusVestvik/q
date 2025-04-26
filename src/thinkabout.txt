@@ -1,0 +1,5 @@
+in rust code is organized by what it does.
+ie a filename should be what does the code in this file accomplish
+it does not separate concerns, this however does not mean you should not separate concerns
+it simply means that rust gives you a way to separate concerns in the same file by
+defining modules, thsi is the idiomatic way to write rust
