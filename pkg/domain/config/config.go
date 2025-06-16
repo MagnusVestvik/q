@@ -9,16 +9,16 @@ import (
 
 // ColorConfig represents the color configuration
 type ColorConfig struct {
-	Box     string `json:"box"`     // Box border color
-	Title   string `json:"title"`   // Title color
-	Default string `json:"default"` // Default text color
-	Empty   string `json:"empty"`   // Empty directory message color
+	Box     string `json:"box"`
+	Title   string `json:"title"`
+	Default string `json:"default"`
+	Empty   string `json:"empty"`
 	Types   struct {
-		Directory string `json:"directory"` // Directory color
-		File      string `json:"file"`      // Default file color
-		Image     string `json:"image"`     // Image file color
-		Video     string `json:"video"`     // Video file color
-		Custom    map[string]string `json:"custom"` // Custom file type colors
+		Directory string            `json:"directory"`
+		File      string            `json:"file"`
+		Image     string            `json:"image"`
+		Video     string            `json:"video"`
+		Custom    map[string]string `json:"custom"`
 	} `json:"types"`
 }
 
@@ -54,27 +54,21 @@ func DefaultConfig() *Config {
 
 // LoadConfig loads the user configuration from the config file
 func LoadConfig() (*Config, error) {
-	// Get user's home directory
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user home directory: %v", err)
 	}
 
-	// Construct config file path
 	configDir := filepath.Join(homeDir, ".config", "q")
 	configFile := filepath.Join(configDir, "q.json")
 
-	// Create default config
 	config := DefaultConfig()
 
-	// Check if config file exists
 	if _, err := os.Stat(configFile); os.IsNotExist(err) {
-		// Create config directory if it doesn't exist
 		if err := os.MkdirAll(configDir, 0755); err != nil {
 			return nil, fmt.Errorf("failed to create config directory: %v", err)
 		}
 
-		// Write default config
 		data, err := json.MarshalIndent(config, "", "  ")
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal default config: %v", err)
@@ -87,7 +81,6 @@ func LoadConfig() (*Config, error) {
 		return config, nil
 	}
 
-	// Read and parse config file
 	data, err := os.ReadFile(configFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %v", err)
@@ -102,31 +95,26 @@ func LoadConfig() (*Config, error) {
 
 // SaveConfig saves the configuration to the config file
 func SaveConfig(config *Config) error {
-	// Get user's home directory
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("failed to get user home directory: %v", err)
 	}
 
-	// Construct config file path
 	configDir := filepath.Join(homeDir, ".config", "q")
 	configFile := filepath.Join(configDir, "q.json")
 
-	// Create config directory if it doesn't exist
 	if err := os.MkdirAll(configDir, 0755); err != nil {
 		return fmt.Errorf("failed to create config directory: %v", err)
 	}
 
-	// Marshal config to JSON
 	data, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
 		return fmt.Errorf("failed to marshal config: %v", err)
 	}
 
-	// Write config file
 	if err := os.WriteFile(configFile, data, 0644); err != nil {
 		return fmt.Errorf("failed to write config file: %v", err)
 	}
 
 	return nil
-} 
+}

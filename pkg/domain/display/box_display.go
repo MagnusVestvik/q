@@ -102,20 +102,16 @@ type BoxDisplay struct {
 
 // hexToColor converts a hex color string to a color.Color
 func hexToColor(hex string) *color.Color {
-	// Remove # if present
 	if strings.HasPrefix(hex, "#") {
 		hex = hex[1:]
 	}
 
-	// Parse hex values
 	var r, g, b uint8
 	fmt.Sscanf(hex, "%02x%02x%02x", &r, &g, &b)
 
-	// Map RGB values to closest color attributes
-	// This is a simple mapping - you might want to implement a more sophisticated color matching algorithm
 	var attrs []color.Attribute
 
-	// Add foreground color
+	// TODO: Refactor
 	if r > 128 && g > 128 && b > 128 {
 		attrs = append(attrs, color.FgWhite)
 	} else if r > 128 && g < 128 && b < 128 {
@@ -134,7 +130,6 @@ func hexToColor(hex string) *color.Color {
 		attrs = append(attrs, color.FgWhite)
 	}
 
-	// Add bold if the color is bright
 	if r > 192 || g > 192 || b > 192 {
 		attrs = append(attrs, color.Bold)
 	}
@@ -144,7 +139,6 @@ func hexToColor(hex string) *color.Color {
 
 // NewBoxDisplay creates a new BoxDisplay instance
 func NewBoxDisplay(displayConfig Config, userConfig *config.Config) *BoxDisplay {
-	// Convert hex colors to color.Color
 	boxColor := hexToColor(userConfig.Colors.Box)
 	titleColor := hexToColor(userConfig.Colors.Title)
 	fileColor := hexToColor(userConfig.Colors.Default)
@@ -153,7 +147,6 @@ func NewBoxDisplay(displayConfig Config, userConfig *config.Config) *BoxDisplay 
 	imageColor := hexToColor(userConfig.Colors.Types.Image)
 	videoColor := hexToColor(userConfig.Colors.Types.Video)
 
-	// Convert custom colors
 	customColors := make(map[string]*color.Color)
 	for fileType, hexColor := range userConfig.Colors.Types.Custom {
 		customColors[string(fileType)] = hexToColor(hexColor)
@@ -238,12 +231,10 @@ func (b *BoxDisplay) createBorder(isTop bool) string {
 
 // getColorForType returns the appropriate color for a file type
 func (b *BoxDisplay) getColorForType(entryType logic.FileType) *color.Color {
-	// Check custom colors first
 	if customColor, ok := b.customColors[string(entryType)]; ok {
 		return customColor
 	}
 
-	// Use predefined colors
 	switch entryType {
 	case logic.TypeDirectory:
 		return b.dirColor
@@ -262,7 +253,7 @@ func (b *BoxDisplay) createRow(index int, entry logic.PathEntry) string {
 	parts = append(parts, b.boxColor.Sprint(b.config.BoxChars.Vertical))
 
 	if b.config.LongFormat {
-		// Permissions (simplified for now)
+		// TODO: Implement proper permisions
 		perms := "-rw-r--r--"
 		if entry.EntryType == logic.TypeDirectory {
 			perms = "drwxr-xr-x"
@@ -270,37 +261,30 @@ func (b *BoxDisplay) createRow(index int, entry logic.PathEntry) string {
 		parts = append(parts, padString(perms, b.config.Columns[0].Width, b.config.Columns[0].Alignment))
 		parts = append(parts, b.boxColor.Sprint(b.config.BoxChars.Vertical))
 
-		// Size
 		sizeStr := formatSize(entry.Size, b.config.HumanReadable)
 		parts = append(parts, padString(sizeStr, b.config.Columns[1].Width, b.config.Columns[1].Alignment))
 		parts = append(parts, b.boxColor.Sprint(b.config.BoxChars.Vertical))
 
-		// Modified time (simplified for now)
 		modified := time.Now().Format("Jan 02 15:04")
 		parts = append(parts, padString(modified, b.config.Columns[2].Width, b.config.Columns[2].Alignment))
 		parts = append(parts, b.boxColor.Sprint(b.config.BoxChars.Vertical))
 
-		// Name
 		name := entry.Name
 		colorFunc := b.getColorForType(entry.EntryType)
 		parts = append(parts, colorFunc.Sprint(padString(name, b.config.Columns[3].Width, b.config.Columns[3].Alignment)))
 	} else {
-		// Index
 		indexStr := fmt.Sprintf("%d", index+1)
 		parts = append(parts, padString(indexStr, b.config.Columns[0].Width, b.config.Columns[0].Alignment))
 		parts = append(parts, b.boxColor.Sprint(b.config.BoxChars.Vertical))
 
-		// Name
 		name := entry.Name
 		colorFunc := b.getColorForType(entry.EntryType)
 		parts = append(parts, colorFunc.Sprint(padString(name, b.config.Columns[1].Width, b.config.Columns[1].Alignment)))
 		parts = append(parts, b.boxColor.Sprint(b.config.BoxChars.Vertical))
 
-		// Type
 		parts = append(parts, colorFunc.Sprint(padString(string(entry.EntryType), b.config.Columns[2].Width, b.config.Columns[2].Alignment)))
 		parts = append(parts, b.boxColor.Sprint(b.config.BoxChars.Vertical))
 
-		// Size
 		sizeStr := formatSize(entry.Size, b.config.HumanReadable)
 		parts = append(parts, padString(sizeStr, b.config.Columns[3].Width, b.config.Columns[3].Alignment))
 	}
@@ -313,9 +297,7 @@ func (b *BoxDisplay) createRow(index int, entry logic.PathEntry) string {
 func (b *BoxDisplay) DisplayEntries(entries []logic.PathEntry) error {
 	var lines []string
 
-	// If no entries, display "Empty" message
 	if len(entries) == 0 {
-		// Create a simple box with "Empty" message
 		width := 20
 		emptyBox := []string{
 			b.boxColor.Sprint(b.config.BoxChars.TopLeft + strings.Repeat(b.config.BoxChars.Horizontal, width-2) + b.config.BoxChars.TopRight),
@@ -326,10 +308,8 @@ func (b *BoxDisplay) DisplayEntries(entries []logic.PathEntry) error {
 		return nil
 	}
 
-	// Top border
 	lines = append(lines, b.createBorder(true))
 
-	// Header
 	var headerParts []string
 	headerParts = append(headerParts, b.boxColor.Sprint(b.config.BoxChars.Vertical))
 	for _, col := range b.config.Columns {
@@ -338,7 +318,6 @@ func (b *BoxDisplay) DisplayEntries(entries []logic.PathEntry) error {
 	}
 	lines = append(lines, strings.Join(headerParts, ""))
 
-	// Separator
 	var separatorParts []string
 	separatorParts = append(separatorParts, b.boxColor.Sprint(b.config.BoxChars.TRight))
 	for i, col := range b.config.Columns {
@@ -350,15 +329,12 @@ func (b *BoxDisplay) DisplayEntries(entries []logic.PathEntry) error {
 	separatorParts = append(separatorParts, b.boxColor.Sprint(b.config.BoxChars.TLeft))
 	lines = append(lines, strings.Join(separatorParts, ""))
 
-	// Data rows
 	for i, entry := range entries {
 		lines = append(lines, b.createRow(i, entry))
 	}
 
-	// Bottom border
 	lines = append(lines, b.createBorder(false))
 
-	// Print all lines
 	fmt.Println(strings.Join(lines, "\n"))
 	return nil
 }
