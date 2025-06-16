@@ -4,11 +4,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/svoosh/q/pkg/domain/config"
-	"github.com/svoosh/q/pkg/domain/display"
-	"github.com/svoosh/q/pkg/domain/flags"
-	"github.com/svoosh/q/pkg/logic"
+	"github.com/MagnusVestvik/q/pkg/domain/config"
+	"github.com/MagnusVestvik/q/pkg/domain/display"
+	"github.com/MagnusVestvik/q/pkg/domain/flags"
+	"github.com/MagnusVestvik/q/pkg/logic"
 )
+
+// Version is set during build
+var Version = "dev"
 
 func main() {
 	// Load user configuration
@@ -25,11 +28,11 @@ func main() {
 
 	// Create display configuration
 	displayConfig := display.Config{
-		Columns: display.DefaultConfig.Columns,
-		BoxChars: display.DefaultBoxChars(),
-		LongFormat: displayFlags.LongFormat,
+		Columns:       display.DefaultConfig.Columns,
+		BoxChars:      display.DefaultBoxChars(),
+		LongFormat:    displayFlags.LongFormat,
 		HumanReadable: displayFlags.HumanReadable,
-		All: displayFlags.All,
+		All:           displayFlags.All,
 	}
 
 	// Create path handler
@@ -37,7 +40,7 @@ func main() {
 	pathHandler := logic.NewPathHandler(logger)
 
 	// Get entries for the target path
-	entries, err := pathHandler.GetEntries(targetPath, displayFlags.All)
+	pathEntries, err := pathHandler.GetEntries(targetPath, displayFlags.All)
 	if err != nil {
 		log.Fatalf("Error getting entries: %v", err)
 	}
@@ -46,7 +49,7 @@ func main() {
 	boxDisplay := display.NewBoxDisplay(displayConfig, userConfig)
 
 	// Display entries
-	if err := boxDisplay.DisplayEntries(entries); err != nil {
+	if err := boxDisplay.DisplayEntries(pathEntries); err != nil {
 		log.Fatalf("Error displaying entries: %v", err)
 	}
-} 
+}

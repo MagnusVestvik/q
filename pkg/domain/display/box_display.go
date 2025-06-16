@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/MagnusVestvik/q/pkg/domain/config"
+	"github.com/MagnusVestvik/q/pkg/logic"
 	"github.com/fatih/color"
-	"github.com/svoosh/q/pkg/domain/config"
-	"github.com/svoosh/q/pkg/logic"
 )
 
 // BoxChars defines the characters used for drawing boxes
@@ -51,11 +51,11 @@ type Column struct {
 
 // Config represents the display configuration
 type Config struct {
-	Columns  []Column
-	BoxChars BoxChars
-	LongFormat bool
+	Columns       []Column
+	BoxChars      BoxChars
+	LongFormat    bool
 	HumanReadable bool
-	All bool
+	All           bool
 }
 
 // DefaultConfig returns the default display configuration
@@ -66,10 +66,10 @@ var DefaultConfig = Config{
 		{Name: "Type", Width: 10, Alignment: "left"},
 		{Name: "Size", Width: 12, Alignment: "right"},
 	},
-	BoxChars: DefaultBoxChars(),
-	LongFormat: false,
+	BoxChars:      DefaultBoxChars(),
+	LongFormat:    false,
 	HumanReadable: false,
-	All: false,
+	All:           false,
 }
 
 // LongFormatConfig returns the configuration for long format display
@@ -80,23 +80,23 @@ var LongFormatConfig = Config{
 		{Name: "Modified", Width: 20, Alignment: "left"},
 		{Name: "Name", Width: 30, Alignment: "left"},
 	},
-	BoxChars: DefaultBoxChars(),
-	LongFormat: true,
+	BoxChars:      DefaultBoxChars(),
+	LongFormat:    true,
 	HumanReadable: false,
-	All: false,
+	All:           false,
 }
 
 // BoxDisplay handles the display formatting
 type BoxDisplay struct {
 	config Config
 	// Color functions
-	dirColor    *color.Color
-	fileColor   *color.Color
-	imageColor  *color.Color
-	videoColor  *color.Color
-	boxColor    *color.Color
-	emptyColor  *color.Color
-	titleColor  *color.Color
+	dirColor     *color.Color
+	fileColor    *color.Color
+	imageColor   *color.Color
+	videoColor   *color.Color
+	boxColor     *color.Color
+	emptyColor   *color.Color
+	titleColor   *color.Color
 	customColors map[string]*color.Color
 }
 
@@ -160,14 +160,14 @@ func NewBoxDisplay(displayConfig Config, userConfig *config.Config) *BoxDisplay 
 	}
 
 	return &BoxDisplay{
-		config: displayConfig,
-		dirColor: dirColor,
-		fileColor: fileColor,
-		imageColor: imageColor,
-		videoColor: videoColor,
-		boxColor: boxColor,
-		emptyColor: emptyColor,
-		titleColor: titleColor,
+		config:       displayConfig,
+		dirColor:     dirColor,
+		fileColor:    fileColor,
+		imageColor:   imageColor,
+		videoColor:   videoColor,
+		boxColor:     boxColor,
+		emptyColor:   emptyColor,
+		titleColor:   titleColor,
 		customColors: customColors,
 	}
 }
@@ -175,10 +175,10 @@ func NewBoxDisplay(displayConfig Config, userConfig *config.Config) *BoxDisplay 
 // formatSize formats a size in bytes to a human-readable string
 func formatSize(size int64, humanReadable bool) string {
 	if !humanReadable {
-		return fmt.Sprintf("%d", size)
+		return fmt.Sprintf("%d B", size)
 	}
 
-	units := []string{"B", "KB", "MB", "GB"}
+	units := []string{"B", "KB", "MB", "GB", "TB", "PB"}
 	value := float64(size)
 	unitIndex := 0
 
@@ -187,6 +187,9 @@ func formatSize(size int64, humanReadable bool) string {
 		unitIndex++
 	}
 
+	if unitIndex == 0 {
+		return fmt.Sprintf("%d %s", int64(value), units[unitIndex])
+	}
 	return fmt.Sprintf("%.1f %s", value, units[unitIndex])
 }
 
@@ -358,4 +361,4 @@ func (b *BoxDisplay) DisplayEntries(entries []logic.PathEntry) error {
 	// Print all lines
 	fmt.Println(strings.Join(lines, "\n"))
 	return nil
-} 
+}

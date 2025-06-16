@@ -1,4 +1,4 @@
-module github.com/svoosh/q
+module github.com/MagnusVestvik/q
 
 go 1.21
 

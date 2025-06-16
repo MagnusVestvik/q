@@ -23,6 +23,12 @@ q [directory]
 
 If no directory is specified, the current directory will be used.
 
+
+## Installation
+```bash
+go install github.com/MagnusVestvik/q/cmd/q@latest
+```
+
 ## Project Structure
 
 This project follows the standard Go project layout:
@@ -60,7 +66,3 @@ go mod download
 ```bash
 go build -o bin/q cmd/q/main.go
 ```
-
-## License
-
-MIT 
