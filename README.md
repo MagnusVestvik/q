@@ -12,7 +12,7 @@ A command-line tool for displaying directory contents in a beautiful box format.
 ## Installation
 
 ```bash
-go install github.com/svoosh/q@latest
+go install github.com/MagnusVestvik/q/cmd/q@latest
 ```
 
 ## Usage
@@ -22,12 +22,6 @@ q [directory]
 ```
 
 If no directory is specified, the current directory will be used.
-
-
-## Installation
-```bash
-go install github.com/MagnusVestvik/q/cmd/q@latest
-```
 
 ## Project Structure
 
